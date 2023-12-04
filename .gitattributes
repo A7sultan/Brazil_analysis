@@ -1,0 +1,2 @@
+your-large-file.xlsx filter=lfs diff=lfs merge=lfs -text
+olist_geolocation_dataset.xlsx filter=lfs diff=lfs merge=lfs -text

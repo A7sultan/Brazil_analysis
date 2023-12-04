@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zip Codes in Brazil</title>
+    <style>
+        /* Style for the table container */
+        .table-container {
+            width: 80%; /* Adjust the width as needed */
+            overflow-x: auto; /* Make the table scrollable horizontally */
+            margin-top: 10px;
+            border: 1px solid black;
+        }
+
+        /* Style for the table */
+        table {
+            border-collapse: collapse;
+            width: 100%; /* Occupy 100% of the container width */
+        }
+
+        /* Style for table cells */
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        .table-container2 {
+            width: 40%; /* Adjust the width as needed */
+            overflow-x: auto; /* Make the table scrollable horizontally */
+            margin-top: 10px;
+        }
+
+        /* Style for the table */
+        table {
+            border-collapse: collapse;
+            width: 100%; /* Occupy 100% of the container width */
+        }
+
+        /* Style for table cells */
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>    
+</head>
+<body>
+    <h2>Geospatial Analysis of Brazilian E-Commerce</h2>
+    <p>Olist has released a dataset with 100k orders made between 2016 and 2018. Each order has some information about the customer and contains the first three digits of the customer zip code. Olist has also released a geolocation database that has 323k lat/lng coordinates related to the first three digits of each zip code.</p>
+    <h2>CEP: the Brazilian Zip Code</h2>
+    <p>A brazilian zip code, also know as CEP, stands for Postal Adressing Code (Código de Endereçamento Postal) and contains 8 digits. Introduced in 1972 as a sequence of five digits, it was expanded to eight digits in 1992 to allow for more precise localization. The standard format is "nnnnn-nnn" (the original five digits, an hyphen, and the new three digits).</p>
+    <p>CEP: 12.345-678</p>
+    <p>Most cities with population around 100,000 and above have a CEP assigned to every public place and to some high-occupancy private spaces, like major commercial buildings and large residential condos. Small towns are assigned a general 5-digit code followed by the suffix -000.</p>
+    <ul>
+        <li>the first part is composed by 5 digits that represent Region, Subregion, Sector, Subsector and Subsector Splitter.</li>
+        <li>the second part contain 3 digits, separated by an hyphen from the first, and it represents the Distribution Identifiers.</li>
+    </ul>
+    <p>Lets look at the geolocation dataset provided by Olist and try to understand how CEP works geographically.</p>
+    <h2>Geolocation dataset</h2>
+    <div class="table-container">
+        <table>
+            <tr>
+                {% for col in a.columns %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+            {% for index, row in a.iterrows() %}
+                <tr>
+                    {% for col in a.columns %}
+                        <td>{{ row[col] }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <p>There are 19.051 different zip_code_prefix. On average there are 52.6 coordinates for each prefix. But there is one prefix with 1.146 coordinates available.</p>
+    <div class="table-container2">
+        <table>
+            <tr>
+                <th>Stat</th>
+                <th>Value</th>
+            </tr>
+            {% for index, row in b.iterrows() %}
+                <tr>
+                    <td>{{ index }}</td>
+                    <td>{{ row[0] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <p>There are some outliers coordinates in the dataset that are outside of brazilian territory. Lets guarantee that all coordinates are within a rectangle delimited by the limits of Brazil.These outliers are removed</p>
+    <p>Then we treat the latitute and longitude coordinates and transform then to Mercator x/y Coordinates.</p>
+    
+    <div class="table-container">
+        
+        <table>
+            <tr>
+                {% for col in c.columns %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+            {% for index, row in c.iterrows() %}
+                <tr>
+                    {% for col in c.columns %}
+                        <td>{{ row[col] }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <h2>Zip Codes in Brazil</h2>
+    <p>Finally plotting the coordinates on a map. We see there is a relationship between the zip code prefix and the location of that zip code. They start in Sao Paulo, with prefix 01001, and then increase counterclockwise finishing in Rio Grande do Sul (south of Brazil), with prefix 99990</p>    
+    <div class="table-container2">
+        <table>
+            <tr>
+                <th>Stat</th>
+                <th>Value</th>
+            </tr>
+            {% for index, row in d.iterrows() %}
+                <tr>
+                    <td>{{ index }}</td>
+                    <td>{{ row[0] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Display the plot -->
+    <div>
+        <h2>Zip Codes in Brazil</h2>
+        {{ plot_html|safe }}
+    </div>
+    
+</body>
+</html>
